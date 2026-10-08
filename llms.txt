@@ -1,0 +1,37 @@
+# earthquery
+
+earthquery turns plain English into vector search over satellite imagery embeddings.
+Ask "solar farms in deserts" and get matching locations on a map, ranked by embedding similarity.
+
+## Status: demo index (v1)
+
+v1 searches a bundled demo index of 489 tiles (Southern Ontario grid plus 20
+world-region anchors) with deterministic 64-dim concept vectors. These are NOT
+real satellite measurements. The pipeline (query -> embedding -> cosine search
+-> ranked tiles) is real and provider-agnostic. Production design: EmbeddingGemma 2
+(Apache 2.0) for queries, AlphaEarth Satellite Embedding V1 (CC-BY 4.0, Google
+Earth Engine dataset GOOGLE_SATELLITE_EMBEDDING_V1_ANNUAL) for tiles.
+Never present demo results as satellite analysis.
+
+## API (no key in v1)
+
+- GET /api/search?q=solar+farms+in+deserts&limit=12
+  Returns { query, provider, dimensions, tile_count, matched_concepts, demo, results }.
+  Each result: { tile_id, bbox: [south, west, north, east], center: [lat, lng],
+  score: 0-100, tags }. HTTP 400 when q is missing. Empty results array when the
+  query matches no known concepts.
+- GET /api/health
+  Returns { status, version, provider, dimensions, tiles, coverage, demo }.
+- GET /llms.txt (this file)
+
+## Examples
+
+curl "https://earthquery.app/api/search?q=container+ports&limit=5"
+curl "https://earthquery.app/api/health"
+
+## Source
+
+https://github.com/Nshipyard/earthquery - MIT License.
+Full docs: README.md. Agent skill: SKILL.md (Claude Code format).
+Data licenses: AlphaEarth embeddings CC-BY 4.0; EmbeddingGemma 2 Apache 2.0;
+map tiles (c) Esri (World Light Gray basemap).

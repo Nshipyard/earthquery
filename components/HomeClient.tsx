@@ -94,9 +94,9 @@ export default function HomeClient({
         onSelect={setSelectedId}
         tileCount={tileCount}
       />
-      <HowItWorks />
+      <HowItWorks tileCount={tileCount} />
       <ApiSection />
-      <Faq />
+      <Faq tileCount={tileCount} />
     </>
   );
 }

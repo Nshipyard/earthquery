@@ -1,17 +1,16 @@
 "use client";
 
 import { useEffect, useState, useSyncExternalStore } from "react";
+import { createPortal } from "react-dom";
 import {
   DEFAULT_MODEL,
   getAiServerSnapshot,
   getAiSnapshot,
-  getModelId,
   initAiSettings,
   removeKey,
   resetAiSettings,
   saveKey,
   setAiEnabled,
-  setModelId,
   subscribeAi,
 } from "@/lib/ai-settings";
 import { probeToken } from "@/lib/live-search";
@@ -29,7 +28,6 @@ function KeyIcon() {
 function Panel({ onClose }: { onClose: () => void }) {
   const ai = useSyncExternalStore(subscribeAi, getAiSnapshot, getAiServerSnapshot);
   const [token, setToken] = useState("");
-  const [model, setModel] = useState(() => getModelId());
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
@@ -43,7 +41,7 @@ function Panel({ onClose }: { onClose: () => void }) {
     setBusy(true);
     setError(null);
     setNotice(null);
-    const probe = await probeToken(clean, model.trim() || DEFAULT_MODEL);
+    const probe = await probeToken(clean, DEFAULT_MODEL);
     setBusy(false);
     if (!probe.ok) {
       setError(
@@ -51,7 +49,6 @@ function Panel({ onClose }: { onClose: () => void }) {
       );
       return;
     }
-    if (model.trim()) setModelId(model.trim());
     saveKey(clean);
     setAiEnabled(true);
     setToken("");
@@ -65,7 +62,6 @@ function Panel({ onClose }: { onClose: () => void }) {
 
   function handleReset() {
     resetAiSettings();
-    setModel(DEFAULT_MODEL);
     setNotice("Everything reset: key removed, AI search off, cached embeddings cleared.");
   }
 
@@ -78,7 +74,7 @@ function Panel({ onClose }: { onClose: () => void }) {
       onClick={onClose}
     >
       <div
-        className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl md:p-8"
+        className="max-h-[calc(100dvh-2rem)] w-full max-w-md overflow-y-auto rounded-2xl bg-white p-6 shadow-xl md:p-8"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-start justify-between">
@@ -151,21 +147,6 @@ function Panel({ onClose }: { onClose: () => void }) {
             />
           </div>
         )}
-
-        <div className="mt-4">
-          <label htmlFor="hf-model" className="text-xs font-medium text-neutral-500">
-            Embedding model <span className="font-normal text-neutral-400">(advanced)</span>
-          </label>
-          <input
-            id="hf-model"
-            type="text"
-            value={model}
-            onChange={(e) => setModel(e.target.value)}
-            spellCheck={false}
-            autoComplete="off"
-            className="mt-1.5 w-full rounded-xl border border-[#ececec] bg-white px-4 py-2.5 font-mono text-sm outline-none transition-shadow placeholder:text-neutral-300 focus:border-[#2563eb] focus:ring-2 focus:ring-[#2563eb]/20"
-          />
-        </div>
 
         {error && (
           <p className="mt-3 rounded-xl bg-red-50 px-4 py-3 text-sm leading-relaxed text-red-700">{error}</p>
@@ -277,7 +258,11 @@ export default function AiSearchToggle() {
           </button>
         )}
       </div>
-      {panelOpen && <Panel onClose={() => setPanelOpen(false)} />}
+      {/* Portal: the sticky blurred header is a containing block for fixed
+          descendants (backdrop-filter), which would pin the overlay to the
+          64px header instead of the viewport. */}
+      {panelOpen &&
+        createPortal(<Panel onClose={() => setPanelOpen(false)} />, document.body)}
     </>
   );
 }

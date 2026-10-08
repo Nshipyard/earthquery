@@ -1,34 +1,33 @@
-const STEPS = [
-  {
-    n: "01",
-    title: "You ask in plain English",
-    body: "“solar farms in deserts” or “golf courses near lakes”. No GIS syntax, no bounding-box math, no band indices.",
-  },
-  {
-    n: "02",
-    title: "The query becomes a vector",
-    body: "EmbeddingGemma 2 maps text into a shared 768-dim space. The demo uses 64-dim concept vectors from keyword matching behind the identical interface.",
-  },
-  {
-    n: "03",
-    title: "Cosine search over tile embeddings",
-    body: "Every tile is scored against the query vector. The demo ranks 489 tiles; production ranks AlphaEarth's global 10m embeddings in Earth Engine.",
-  },
-  {
-    n: "04",
-    title: "Ranked footprints on a map",
-    body: "Top tiles render as map rectangles with scores. GET /api/search returns the same ranking as JSON, so agents skip the UI entirely.",
-  },
-];
+export default function HowItWorks({ tileCount }: { tileCount: number }) {
+  const STEPS = [
+    {
+      n: "01",
+      title: "You ask in plain English",
+      body: "“solar farms in deserts” or “golf courses near lakes”. No GIS syntax, no bounding-box math, no band indices.",
+    },
+    {
+      n: "02",
+      title: "The query becomes a vector",
+      body: "EmbeddingGemma 2 maps text into a shared 768-dim space. The demo uses 64-dim concept vectors from keyword matching behind the identical interface.",
+    },
+    {
+      n: "03",
+      title: "Cosine search over tile embeddings",
+      body: `Every tile is scored against the query vector. The demo ranks ${tileCount} tiles; production ranks AlphaEarth's global 10m embeddings in Earth Engine.`,
+    },
+    {
+      n: "04",
+      title: "Ranked footprints on a map",
+      body: "Top tiles render as map rectangles with scores. GET /api/search returns the same ranking as JSON, so agents skip the UI entirely.",
+    },
+  ];
 
-const COMPARISON: [string, string, string][] = [
-  ["Query embedding", "Keyword to concept map, 64-dim", "EmbeddingGemma 2, 768-dim, via Hugging Face"],
-  ["Tile index", "489 seeded tiles, generated locally", "AlphaEarth V1 annual mosaic, Google Earth Engine"],
-  ["Coverage", "Southern Ontario + 20 world regions", "Global, 10m resolution, 2017-2025"],
-  ["Vectors", "Simulated from concept tags", "Measured from multi-sensor satellite imagery"],
-];
-
-export default function HowItWorks() {
+  const COMPARISON: [string, string, string][] = [
+    ["Query embedding", "Keyword to concept map, 64-dim", "EmbeddingGemma 2, 768-dim, via Hugging Face"],
+    ["Tile index", `${tileCount} seeded tiles, generated locally`, "AlphaEarth V1 annual mosaic, Google Earth Engine"],
+    ["Coverage", "Southern Ontario + 22 world regions", "Global, 10m resolution, 2017-2025"],
+    ["Vectors", "Simulated from concept tags", "Measured from multi-sensor satellite imagery"],
+  ];
   return (
     <section id="how" className="mx-auto max-w-6xl scroll-mt-24 px-6 py-20 md:py-28">
       <p className="text-sm font-semibold uppercase tracking-widest text-[#2563eb]">How it works</p>

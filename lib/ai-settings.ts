@@ -9,16 +9,14 @@ export const DEFAULT_MODEL = "google/embeddinggemma-2";
 
 const LS_KEY = "earthquery.hf_token";
 const LS_ENABLED = "earthquery.ai_enabled";
-const LS_MODEL = "earthquery.hf_model";
 export const LS_CONCEPT_CACHE = "earthquery.concept_emb_v1";
 
 export interface AiState {
   enabled: boolean;
   hasKey: boolean;
-  model: string;
 }
 
-const SERVER_SNAPSHOT: AiState = { enabled: false, hasKey: false, model: DEFAULT_MODEL };
+const SERVER_SNAPSHOT: AiState = { enabled: false, hasKey: false };
 
 let state: AiState = SERVER_SNAPSHOT;
 let initialized = false;
@@ -50,7 +48,6 @@ export function initAiSettings(): void {
   state = {
     enabled: window.localStorage.getItem(LS_ENABLED) === "1",
     hasKey: !!window.localStorage.getItem(LS_KEY),
-    model: window.localStorage.getItem(LS_MODEL) || DEFAULT_MODEL,
   };
   // A stored key with AI left on stays on; without a key it cannot be on.
   if (state.enabled && !state.hasKey) {
@@ -63,11 +60,6 @@ export function initAiSettings(): void {
 export function getToken(): string | null {
   if (typeof window === "undefined") return null;
   return window.localStorage.getItem(LS_KEY);
-}
-
-export function getModelId(): string {
-  if (typeof window === "undefined") return DEFAULT_MODEL;
-  return window.localStorage.getItem(LS_MODEL) || DEFAULT_MODEL;
 }
 
 export function saveKey(token: string): void {
@@ -87,14 +79,13 @@ export function removeKey(): void {
   emit();
 }
 
-/** Full reset: key, toggle, model, and cached concept embeddings. */
+/** Full reset: key, toggle, and cached concept embeddings. */
 export function resetAiSettings(): void {
   if (typeof window === "undefined") return;
   window.localStorage.removeItem(LS_KEY);
   window.localStorage.removeItem(LS_ENABLED);
-  window.localStorage.removeItem(LS_MODEL);
   window.localStorage.removeItem(LS_CONCEPT_CACHE);
-  state = { enabled: false, hasKey: false, model: DEFAULT_MODEL };
+  state = { enabled: false, hasKey: false };
   emit();
 }
 
@@ -103,16 +94,6 @@ export function setAiEnabled(on: boolean): void {
   if (on && !state.hasKey) return; // cannot enable without a key
   window.localStorage.setItem(LS_ENABLED, on ? "1" : "0");
   state = { ...state, enabled: on };
-  emit();
-}
-
-export function setModelId(model: string): void {
-  const clean = model.trim();
-  if (!clean || typeof window === "undefined") return;
-  window.localStorage.setItem(LS_MODEL, clean);
-  // Cached concept embeddings belong to the previous model.
-  window.localStorage.removeItem(LS_CONCEPT_CACHE);
-  state = { ...state, model: clean };
   emit();
 }
 

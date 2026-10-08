@@ -87,16 +87,18 @@ Response shape:
   "query": "solar farms in deserts",
   "provider": "demo-concept-embedder",
   "dimensions": 64,
-  "tile_count": 489,
+  "tile_count": 521,
   "matched_concepts": ["solar farm", "desert"],
+  "matched_places": [],
+  "notice": null,
   "demo": true,
   "results": [
     {
-      "tile_id": "w-sahara-11",
-      "bbox": [23.52, 12.72, 23.64, 12.84],
-      "center": [23.58, 12.78],
-      "score": 97,
-      "tags": ["desert", "solar farm", "oil field"]
+      "tile_id": "w-sahara-12",
+      "bbox": [23.52, 12.84, 23.64, 12.96],
+      "center": [23.58, 12.9],
+      "score": 94,
+      "tags": ["desert", "solar farm"]
     }
   ]
 }

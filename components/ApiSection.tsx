@@ -1,19 +1,21 @@
-const CURL = `curl "https://earthquery.app/api/search?q=solar+farms+in+deserts&limit=3"`;
+const CURL = `curl "https://earthquery-mauve.vercel.app/api/search?q=solar+farms+in+deserts&limit=3"`;
 
 const RESPONSE = `{
   "query": "solar farms in deserts",
   "provider": "demo-concept-embedder",
   "dimensions": 64,
-  "tile_count": 489,
-  "matched_concepts": ["solar farm", "farmland", "desert"],
+  "tile_count": 521,
+  "matched_concepts": ["solar farm", "desert"],
+  "matched_places": [],
+  "notice": null,
   "demo": true,
   "results": [
     {
-      "tile_id": "on-0117",
-      "bbox": [44.15, -80.8, 44.3, -80.65],
-      "center": [44.225, -80.725],
-      "score": 85,
-      "tags": ["farmland", "solar farm"]
+      "tile_id": "w-sahara-12",
+      "bbox": [23.52, 12.84, 23.64, 12.96],
+      "center": [23.58, 12.9],
+      "score": 94,
+      "tags": ["desert", "solar farm"]
     }
   ]
 }`;

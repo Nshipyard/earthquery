@@ -11,7 +11,7 @@ ranked by cosine similarity.
 
 ## Demo status (read this first)
 
-v1 runs on a **demo index**: 489 tiles (Southern Ontario grid + 20 world-region
+v1 runs on a **demo index**: 521 tiles (Southern Ontario grid + 22 world-region
 anchors) with deterministic 64-dim concept vectors. These are NOT satellite
 measurements. Treat results as pipeline demonstrations, never as real
 Earth-observation findings. The `demo: true` field in every API response marks
@@ -20,7 +20,7 @@ documented in README.md and lib/providers.ts.
 
 ## API
 
-Base URL: `https://earthquery.app` (local dev: `http://localhost:3000`). No key in v1.
+Base URL: `https://earthquery-mauve.vercel.app` (local dev: `http://localhost:3000`). No key in v1.
 
 ### Search
 
@@ -33,16 +33,18 @@ Response:
   "query": "solar farms in deserts",
   "provider": "demo-concept-embedder",
   "dimensions": 64,
-  "tile_count": 489,
+  "tile_count": 521,
   "matched_concepts": ["solar farm", "desert"],
+  "matched_places": [],
+  "notice": null,
   "demo": true,
   "results": [
     {
-      "tile_id": "w-sahara-11",
-      "bbox": [23.52, 12.72, 23.64, 12.84],
-      "center": [23.58, 12.78],
-      "score": 97,
-      "tags": ["desert", "solar farm", "oil field"]
+      "tile_id": "w-sahara-12",
+      "bbox": [23.52, 12.84, 23.64, 12.96],
+      "center": [23.58, 12.9],
+      "score": 94,
+      "tags": ["desert", "solar farm"]
     }
   ]
 }

@@ -1,7 +1,8 @@
-const ITEMS = [
+export default function Faq({ tileCount }: { tileCount: number }) {
+  const ITEMS = [
   {
     q: "Is this real satellite analysis?",
-    a: "No. v1 searches a bundled demo index of 489 tiles whose vectors are deterministic concept vectors, not measurements from satellite imagery. The pipeline itself is real: query to embedding to cosine search to ranked tiles. The README documents exactly what is simulated and how to replace it.",
+    a: `No. v1 searches a bundled demo index of ${tileCount} tiles whose vectors are deterministic concept vectors, not measurements from satellite imagery. The pipeline itself is real: query to embedding to cosine search to ranked tiles. The README documents exactly what is simulated and how to replace it.`,
   },
   {
     q: "What models does the production design use?",
@@ -25,7 +26,6 @@ const ITEMS = [
   },
 ];
 
-export default function Faq() {
   return (
     <section id="faq" className="mx-auto max-w-3xl scroll-mt-24 px-6 py-20 md:py-28">
       <p className="text-sm font-semibold uppercase tracking-widest text-[#2563eb]">FAQ</p>

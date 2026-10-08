@@ -23,9 +23,10 @@ Never present demo results as satellite analysis.
   honest empty result with a `notice` string.
 - AI search (bring your own key): the header toggle lets a visitor paste a
   Hugging Face token, stored only in their browser's localStorage. The query is
-  embedded in-browser with a real model (default google/embeddinggemma-2) via
-  the Hugging Face Inference API; tile vectors are rebuilt from their tags'
-  concept embeddings in the same space. The key never touches our servers.
+  embedded in-browser with the EmbeddingGemma 2 model
+  (google/embeddinggemma-2) via the Hugging Face Inference API; tile vectors
+  are rebuilt from their tags' concept embeddings in the same space. The key
+  never touches our servers.
 
 ## API (no key in v1)
 
@@ -49,8 +50,8 @@ See README "Configuration".
 
 ## Examples
 
-curl "https://earthquery-q86gp73k8-richardsondxs-projects.vercel.app/api/search?q=container+ports&limit=5"
-curl "https://earthquery-q86gp73k8-richardsondxs-projects.vercel.app/api/health"
+curl "https://earthquery-mauve.vercel.app/api/search?q=container+ports&limit=5"
+curl "https://earthquery-mauve.vercel.app/api/health"
 
 ## Source
 

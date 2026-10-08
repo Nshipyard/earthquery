@@ -16,7 +16,7 @@ import type { SearchResponse, SearchResultItem, Tile } from "./geo";
 import { parsePlaces, centerInAnyBbox } from "./places";
 import {
   getToken,
-  getModelId,
+  DEFAULT_MODEL,
   LS_CONCEPT_CACHE,
 } from "./ai-settings";
 
@@ -165,7 +165,7 @@ export async function liveSearch(
 ): Promise<SearchResponse> {
   const token = getToken();
   if (!token) throw new Error("No Hugging Face token saved. Open AI search settings to add one.");
-  const model = getModelId();
+  const model = DEFAULT_MODEL;
 
   const { dims, vectors } = await getConceptEmbeddings(token, model, onProgress);
   const tiles = await loadTiles();

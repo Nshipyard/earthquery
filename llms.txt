@@ -5,7 +5,7 @@ Ask "solar farms in deserts" and get matching locations on a map, ranked by embe
 
 ## Status: demo index (v1)
 
-v1 searches a bundled demo index of 489 tiles (Southern Ontario grid plus 20
+v1 searches a bundled demo index of 521 tiles (Southern Ontario grid plus 22
 world-region anchors) with deterministic 64-dim concept vectors. These are NOT
 real satellite measurements. The pipeline (query -> embedding -> cosine search
 -> ranked tiles) is real and provider-agnostic. Production design: EmbeddingGemma 2
@@ -13,25 +13,49 @@ real satellite measurements. The pipeline (query -> embedding -> cosine search
 Earth Engine dataset GOOGLE_SATELLITE_EMBEDDING_V1_ANNUAL) for tiles.
 Never present demo results as satellite analysis.
 
+## Search modes
+
+- Keyword (default): the query is mapped to land-use concepts via a deterministic
+  keyword/phrase table (lib/providers.ts), then cosine-ranked. No key needed.
+- Place-aware: "<thing> in <place>" queries are filtered to the named region
+  (lib/places.ts gazetteer: Africa, Europe, Asia, North America, South America,
+  Oceania, Sahara, Amazon, Middle East). Places with no demo coverage return an
+  honest empty result with a `notice` string.
+- AI search (bring your own key): the header toggle lets a visitor paste a
+  Hugging Face token, stored only in their browser's localStorage. The query is
+  embedded in-browser with a real model (default google/embeddinggemma-2) via
+  the Hugging Face Inference API; tile vectors are rebuilt from their tags'
+  concept embeddings in the same space. The key never touches our servers.
+
 ## API (no key in v1)
 
 - GET /api/search?q=solar+farms+in+deserts&limit=12
-  Returns { query, provider, dimensions, tile_count, matched_concepts, demo, results }.
+  Returns { query, provider, dimensions, tile_count, matched_concepts,
+  matched_places, notice, demo, results }.
   Each result: { tile_id, bbox: [south, west, north, east], center: [lat, lng],
   score: 0-100, tags }. HTTP 400 when q is missing. Empty results array when the
-  query matches no known concepts.
+  query matches no known concepts, or when a named place has no demo coverage
+  (then `notice` explains why).
 - GET /api/health
   Returns { status, version, provider, dimensions, tiles, coverage, demo }.
 - GET /llms.txt (this file)
 
+## Configuration
+
+No environment variables or keys are required to run the demo. Optional:
+a visitor's Hugging Face token is entered in the browser (AI search toggle) and
+stored in localStorage; the production server-side adapter uses HF_TOKEN.
+See README "Configuration".
+
 ## Examples
 
-curl "https://earthquery.app/api/search?q=container+ports&limit=5"
-curl "https://earthquery.app/api/health"
+curl "https://earthquery-q86gp73k8-richardsondxs-projects.vercel.app/api/search?q=container+ports&limit=5"
+curl "https://earthquery-q86gp73k8-richardsondxs-projects.vercel.app/api/health"
 
 ## Source
 
 https://github.com/Nshipyard/earthquery - MIT License.
+Built by Richardson Dackam (https://x.com/richardsondx, https://github.com/richardsondx).
 Full docs: README.md. Agent skill: SKILL.md (Claude Code format).
 Data licenses: AlphaEarth embeddings CC-BY 4.0; EmbeddingGemma 2 Apache 2.0;
 map tiles (c) Esri (World Light Gray basemap).

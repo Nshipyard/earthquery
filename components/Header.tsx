@@ -9,6 +9,8 @@ function LogoMark() {
   );
 }
 
+import AiSearchToggle from "./AiSearchToggle";
+
 const NAV = [
   { label: "How it works", href: "#how" },
   { label: "API", href: "#api" },
@@ -34,12 +36,15 @@ export default function Header() {
             </a>
           ))}
         </nav>
-        <a
-          href="#search"
-          className="rounded-full bg-[#0a0a0a] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-neutral-800"
-        >
-          Try the demo
-        </a>
+        <div className="flex items-center gap-2">
+          <AiSearchToggle />
+          <a
+            href="#search"
+            className="rounded-full bg-[#0a0a0a] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-neutral-800"
+          >
+            Try the demo
+          </a>
+        </div>
       </div>
     </header>
   );

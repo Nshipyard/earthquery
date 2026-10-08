@@ -39,6 +39,13 @@ export interface SearchResponse {
   dimensions: number;
   tile_count: number;
   matched_concepts: string[];
+  /** Display labels of detected places, e.g. ["Africa"]. Empty when none. */
+  matched_places: string[];
+  /**
+   * Human-readable note when a detected place has no tiles in the demo
+   * index (e.g. Antarctica). Null otherwise.
+   */
+  notice: string | null;
   demo: boolean;
   results: SearchResultItem[];
 }

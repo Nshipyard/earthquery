@@ -4,6 +4,7 @@
 
 import type { SearchResponse, SearchResultItem, Tile, TileIndexMeta } from "./geo";
 import { DemoEmbeddingProvider } from "./providers";
+import { parsePlaces, centerInAnyBbox } from "./places";
 import tilesJson from "../public/data/tiles.json";
 import conceptsJson from "../public/data/concepts.json";
 
@@ -30,21 +31,42 @@ function cosine(a: number[], b: number[]): number {
 
 export function searchTiles(query: string, limit = 12): SearchResponse {
   const embedded = provider.embed(query);
+  const places = parsePlaces(query);
+  const placeLabels = places.map((p) => p.label);
   const safeLimit = Math.max(1, Math.min(limit, 50));
 
+  const base = {
+    query,
+    provider: provider.name,
+    dimensions: provider.dimensions,
+    tile_count: tiles.length,
+    matched_concepts: embedded?.concepts ?? [],
+    matched_places: placeLabels,
+    notice: null as string | null,
+    demo: provider.isDemo,
+  };
+
   if (!embedded) {
-    return {
-      query,
-      provider: provider.name,
-      dimensions: provider.dimensions,
-      tile_count: tiles.length,
-      matched_concepts: [],
-      demo: provider.isDemo,
-      results: [],
-    };
+    return { ...base, results: [] };
   }
 
-  const scored: SearchResultItem[] = tiles.map((t) => ({
+  // Geographic constraint: when the query names a place, rank only tiles
+  // inside it. Without this, "solar farms in africa" returns Ontario tiles
+  // because the place token was silently dropped.
+  let candidates = tiles;
+  if (places.length > 0) {
+    const inRegion = tiles.filter((t) => centerInAnyBbox(t.center, places));
+    if (inRegion.length === 0) {
+      return {
+        ...base,
+        notice: `The demo index has no tiles in ${placeLabels.join(" or ")} yet.`,
+        results: [],
+      };
+    }
+    candidates = inRegion;
+  }
+
+  const scored: SearchResultItem[] = candidates.map((t) => ({
     tile_id: t.id,
     bbox: t.bbox,
     center: t.center,
@@ -54,13 +76,5 @@ export function searchTiles(query: string, limit = 12): SearchResponse {
 
   scored.sort((a, b) => b.score - a.score);
 
-  return {
-    query,
-    provider: provider.name,
-    dimensions: provider.dimensions,
-    tile_count: tiles.length,
-    matched_concepts: embedded.concepts,
-    demo: provider.isDemo,
-    results: scored.slice(0, safeLimit),
-  };
+  return { ...base, results: scored.slice(0, safeLimit) };
 }

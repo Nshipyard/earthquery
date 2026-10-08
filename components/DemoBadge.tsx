@@ -11,7 +11,7 @@ export default function DemoBadge({
       title="v1 searches a bundled demo index with simulated vectors, not live satellite embeddings."
     >
       <span className="h-1.5 w-1.5 rounded-full bg-[#2563eb]" aria-hidden="true" />
-      Demo index · {tiles} tiles · Ontario + 20 world regions
+      Demo index · {tiles} tiles · Ontario + 22 world regions
     </span>
   );
 }

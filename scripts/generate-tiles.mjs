@@ -164,6 +164,8 @@ const ANCHORS = [
   { name: "atacama", lat: -23.5, lng: -68.6, tags: ["desert", "mining", "quarry"] },
   { name: "threegorges", lat: 30.82, lng: 111.0, tags: ["dam", "reservoir", "river"] },
   { name: "mekong", lat: 10.4, lng: 105.1, tags: ["rice paddy", "river", "wetland"] },
+  { name: "bordeaux", lat: 44.8, lng: -0.6, tags: ["vineyard", "farmland", "river"] },
+  { name: "nile", lat: 30.0, lng: 31.2, tags: ["river", "farmland", "desert"] },
 ];
 
 for (const a of ANCHORS) {
@@ -190,7 +192,7 @@ writeFileSync(
         generated_at: new Date().toISOString().split("T")[0],
         count: tiles.length,
         dimensions: DIM,
-        coverage: "Southern Ontario grid (0.15 deg cells) plus 20 world-region anchors (0.12 deg cells)",
+        coverage: "Southern Ontario grid (0.15 deg cells) plus 22 world-region anchors (0.12 deg cells)",
         demo: true,
         note: "Demo vectors are deterministic seeded combinations of concept vectors, not real satellite embeddings.",
       },

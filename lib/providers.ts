@@ -78,6 +78,25 @@ const STOPWORDS = new Set([
   "for", "by", "at", "from", "show", "me", "find", "all", "any", "are",
 ]);
 
+// Multi-word phrases, matched before single tokens so "solar farms" maps to
+// exactly [solar farm] instead of [solar farm, farmland].
+const PHRASES: Record<string, string[]> = {
+  "solar farm": ["solar farm"],
+  "solar farms": ["solar farm"],
+  "wind farm": ["wind farm"],
+  "wind farms": ["wind farm"],
+  "golf course": ["golf course"],
+  "golf courses": ["golf course"],
+  "rice paddy": ["rice paddy"],
+  "rice paddies": ["rice paddy"],
+  "oil field": ["oil field"],
+  "oil fields": ["oil field"],
+  "ski resort": ["ski resort"],
+  "ski resorts": ["ski resort"],
+  "container terminal": ["container terminal"],
+  "container terminals": ["container terminal"],
+};
+
 function singular(token: string): string {
   if (token.endsWith("ies") && token.length > 4) return token.slice(0, -3) + "y";
   if (token.endsWith("es") && token.length > 4) return token.slice(0, -2);
@@ -93,8 +112,18 @@ export class DemoEmbeddingProvider implements EmbeddingProvider {
   constructor(private conceptVectors: Record<string, number[]>) {}
 
   embed(text: string): { vector: number[]; concepts: string[] } | null {
-    const tokens = text.toLowerCase().split(/[^a-z]+/).filter(Boolean);
+    let lowered = ` ${text.toLowerCase()} `;
     const concepts: string[] = [];
+    // Phrase-first matching: consume "solar farms" before "farms" can fire.
+    for (const [phrase, mapped] of Object.entries(PHRASES)) {
+      if (lowered.includes(` ${phrase} `)) {
+        lowered = lowered.split(` ${phrase} `).join(" ");
+        for (const c of mapped) {
+          if (!concepts.includes(c) && this.conceptVectors[c]) concepts.push(c);
+        }
+      }
+    }
+    const tokens = lowered.split(/[^a-z]+/).filter(Boolean);
     for (const raw of tokens) {
       if (STOPWORDS.has(raw)) continue;
       const hit = KEYWORDS[raw] ?? KEYWORDS[singular(raw)];

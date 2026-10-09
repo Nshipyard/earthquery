@@ -21,11 +21,28 @@ export const metadata: Metadata = {
     "EmbeddingGemma",
     "satellite embedding search",
   ],
+  metadataBase: new URL("https://earthquery.nshipyard.com"),
   openGraph: {
     title: "earthquery: ask the planet a question",
     description:
       "Type 'solar farms in deserts' and get matching locations on a map, ranked by embedding similarity.",
     type: "website",
+    url: "https://earthquery.nshipyard.com",
+    images: [
+      {
+        url: "https://earthquery.nshipyard.com/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "earthquery: ask the planet a question",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "earthquery: ask the planet a question",
+    description:
+      "Type 'solar farms in deserts' and get matching locations on a map, ranked by embedding similarity.",
+    images: ["https://earthquery.nshipyard.com/og-image.png"],
   },
 };
 
